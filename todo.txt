@@ -1,0 +1,14 @@
+1. Create white window, large part of screen
+2. create data structure, graphlike.
+
+	Node - type of relationship [enum] - Set<Node>
+
+
+Relationship:
+has origin (1)
+has targets (1..)
+can have parameters (like hasWithDefault[internal])
+
+Node -> set of relationships, each of different type 
+
+First: print node 	

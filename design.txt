@@ -1,0 +1,46 @@
+A challenge I encounter from making notes from books is that it can be hard (given the many details) to see the forest through the trees.
+
+Mindmaps/concept maps can help, https://inforapid.org/ looks very nice. But I want something that is in easy text-based format, in contrast to what inforapid has. And I also want to easily collapse or expand nodes. Exact architecture is something I'd prefer to leave to the computer, dynamically adjusted to adding or deleting items.
+
+For example: if I would want to organize my knowledge on C# class contents, I would have 
+
+class (concept)
+	(hasOptionalElement) 
+		field
+		property
+		constructor 
+		method
+	(isA)
+		reference type 
+	(hasOptionalButDefaultedElement)
+		access modifier - default = internal
+		parent - default = Object
+		
+method 
+	(hasRequiredElement)
+		type 
+	(hasOptionalElement) 
+		argument list 
+	(hasOptionalButDefaultedElement)
+		access modifier - default = private
+		
+
+I could even unify relationships, like hasElement and isA, 
+
+A starting window could show a (colored?) box "class (concept)", surrounded by two other boxes: isA, and hasElement.
+Clicking on "isA" should show "reference type" (with the point of an arrow pointing to that box Clicking on "isA" again should hide the reference type 
+
+So three states: fully expanded, edge, and invisible. Clickon edge: expand fully. Click on fully expanded- invisible. 
+
+Ideally I want the data to be available as a text file (for version control etc.)
+That makes a desktop-like app best
+Probably choose Kotlin again instead of Electron (which has breaking changes every few months...)
+
+Goal
+
+
+
+
+		
+
+ 
