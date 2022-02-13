@@ -1,0 +1,9 @@
+class (concept)
+  can have
+    constructor
+    method
+    field
+    property
+  is a(n)
+    reference type
+

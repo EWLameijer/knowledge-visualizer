@@ -1,3 +1,28 @@
+1. Show simple concept + relationship in console // Done
+2. NEXT load this from file instead of source code
+    1. read all concepts
+    2. read concepts including relationships
+        okay. For each line I need to determine the depth
+        If is adding targetConcepts AND depth ==1 // new relationship, origin stays constant
+        if is adding targetConcepts AND depth ==0 // save things so far, clear origin.
+
+4... write to file
+    4a: modify print of relationship to be like you expect
+        so class (concept)
+              can have
+                constructor
+        // todo: print root, print("  "+relationship.text) println("   " + target
+3... add concept or relationship
+5... make it with graphics
+
+
+// problems:
+I want to compare the relationship string to the strings in the classes.
+What are my options?
+-I can make a map of string to Type
+
+
+
 1. Create white window, large part of screen
 2. create data structure, graphlike.
 
