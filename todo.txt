@@ -10,8 +10,8 @@
     4a: modify print of relationship to be like you expect
         so class (concept)
               can have
-                constructor
-        // todo: print root, print("  "+relationship.text) println("   " + target
+                constructor // DONE!
+
 3... add concept or relationship
 5... make it with graphics
 
