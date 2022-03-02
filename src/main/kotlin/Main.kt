@@ -1,8 +1,11 @@
 import org.ewlameijer.knowviz.files.FileParser
+import java.io.File
+
+const val fileName = "knowledge.txt"
 
 fun main() {
     println("Knowledge Visualizer")
-    val kb = FileParser("knowledge.txt").parse()
+    val kb = FileParser(fileName).parse()
     println(kb)
     println("Add a relationship (originConcept, relationship, targetconcept)")
     println("Example: method [ENTER] has a(n)[ENTER] return value[ENTER]")
@@ -14,6 +17,7 @@ fun main() {
     kb.addRelationship(originConcept, relationship, targetConcept)
     println("New version:\n\n")
     println(kb)
+    File(fileName).writeText(kb.toString())
 }
 
 fun getLine() : String {

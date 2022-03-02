@@ -1,7 +1,5 @@
 // not beautiful: relationshiptype enum same as class...
 
-1. write total to file (same: knowledge.txt)
-
 
 
 5... make it with graphics

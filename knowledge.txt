@@ -7,3 +7,10 @@ class (concept)
   is a(n)
     reference type
 
+method
+  has a(n)
+    return value
+  can have
+    parameter(s)
+    access modifier
+
