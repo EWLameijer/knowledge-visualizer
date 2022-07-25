@@ -2,6 +2,8 @@ package org.ewlameijer.knowviz.data
 
 class KnowledgeBase(private val concepts: MutableSet<Concept>, private val relationships: MutableSet<Relationship>) {
 
+    fun concepts() : Set<Concept> = concepts
+
     fun addRelationship(originConceptAsString: String, relationshipAsString: String, targetConceptAsString: String) {
         val originConcept = getOrCreateConcept(originConceptAsString)
         val targetConcept = getOrCreateConcept(targetConceptAsString)

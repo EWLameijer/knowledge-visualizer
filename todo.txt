@@ -1,5 +1,10 @@
 // not beautiful: relationshiptype enum same as class...
 
+1. Create window OK
+2. Make window white OK
+
+Hmm... best may be to add buttons.
+
 
 
 5... make it with graphics

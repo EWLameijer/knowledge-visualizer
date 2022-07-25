@@ -14,3 +14,7 @@ method
     parameter(s)
     access modifier
 
+struct
+  is a(n)
+    value type
+
