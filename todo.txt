@@ -1,9 +1,9 @@
-// not beautiful: relationshiptype enum same as class...
+To do:
+1) Make buttons repel one another
+2) Draw lines between buttons
+3) make lines into unidirectional arrows
+4) make lines contract like springs until min-length
 
-1. Create window OK
-2. Make window white OK
-
-Hmm... best may be to add buttons.
 
 
 

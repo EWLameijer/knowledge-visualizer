@@ -4,6 +4,7 @@ import org.ewlameijer.knowviz.data.KnowledgeBase
 import java.awt.Color
 import java.awt.Font
 import java.awt.FontMetrics
+import java.awt.Rectangle
 import javax.swing.JButton
 import javax.swing.JFrame
 import kotlin.random.Random
@@ -14,6 +15,9 @@ const val buttonHeight = 30
 const val horizontalTextMargin = 20
 
 class MainWindow(knowledgeBase: KnowledgeBase) : JFrame() {
+    val concepts = mutableListOf<MovableButtonComponent>()
+    val borderForceStrength = 100
+
     init {
         setSize(windowWidth, windowHeight)
         defaultCloseOperation = EXIT_ON_CLOSE
@@ -24,10 +28,27 @@ class MainWindow(knowledgeBase: KnowledgeBase) : JFrame() {
             println(it.text)
             val button = MovableButtonComponent(it.text)
             add(button)
+            concepts += button
         }
+        optimizeLayout()
         repaint()
     }
+
+    fun optimizeLayout() {
+        concepts.forEach {
+            val center = it.getCenter()
+            // a force: needs a distance between two points, and a direction, and a relative strength (assume quadratic?)
+            val forceFromTop = Force(center, Coordinate(center.x, 0), borderForceStrength)
+
+        }
+
+    }
 }
+
+data class Coordinate(val x: Int, val y: Int)
+
+// force has a strength and a direction, calculated from position of object, the position of the interacting object, and some relative strength
+class Force(objectPosition: Coordinate, interactingObjectPosition: Coordinate, relativeStrength: Int)
 
 class MovableButtonComponent(text: String) : JButton(text) {
     init {
@@ -36,6 +57,10 @@ class MovableButtonComponent(text: String) : JButton(text) {
         val thisButtonWidth = textWidth + 2 * horizontalTextMargin
         this.setBounds(randomX(thisButtonWidth), randomY(), thisButtonWidth, buttonHeight)
     }
+
+    private fun Rectangle.center() = Coordinate(x + width / 2, y + height / 2)
+
+    fun getCenter(): Coordinate = bounds.center()
 }
 
 val randomizer = Random.Default
