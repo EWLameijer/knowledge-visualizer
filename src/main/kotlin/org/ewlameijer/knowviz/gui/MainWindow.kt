@@ -7,6 +7,7 @@ import java.awt.FontMetrics
 import java.awt.Rectangle
 import javax.swing.JButton
 import javax.swing.JFrame
+import kotlin.math.sqrt
 import kotlin.random.Random
 
 const val windowWidth = 1000
@@ -16,7 +17,7 @@ const val horizontalTextMargin = 20
 
 class MainWindow(knowledgeBase: KnowledgeBase) : JFrame() {
     val concepts = mutableListOf<MovableButtonComponent>()
-    val borderForceStrength = 100
+    val borderForceStrength = 100.0
 
     init {
         setSize(windowWidth, windowHeight)
@@ -38,17 +39,48 @@ class MainWindow(knowledgeBase: KnowledgeBase) : JFrame() {
         concepts.forEach {
             val center = it.getCenter()
             // a force: needs a distance between two points, and a direction, and a relative strength (assume quadratic?)
-            val forceFromTop = Force(center, Coordinate(center.x, 0), borderForceStrength)
+            // try step of 10
+            val forceFromTop = RepellingForce.from(Coordinate(center.x, 0), center, borderForceStrength)
 
         }
 
     }
 }
 
-data class Coordinate(val x: Int, val y: Int)
+data class Coordinate(val x: Int, val y: Int) {
+    fun directionTo(other: Coordinate) = Direction(other.x - x, other.y - y)
+}
 
-// force has a strength and a direction, calculated from position of object, the position of the interacting object, and some relative strength
-class Force(objectPosition: Coordinate, interactingObjectPosition: Coordinate, relativeStrength: Int)
+data class Direction(val dx: Int, val dy: Int) {
+    companion object {
+        val none = Direction(0, 0)
+    }
+
+    val size = sqrt((dx * dx + dy * dy).toDouble())
+
+    fun normalize() =
+        if (this == none) NormalizedDirection(0.0, 0.0)
+        else NormalizedDirection(dx / size, dy / size)
+}
+
+data class DirectionVector(val dx: Double, val dy: Double)
+
+class NormalizedDirection(private val dx: Double, private val dy: Double) {
+    operator fun times(factor: Double) = DirectionVector(dx * factor, dy * factor)
+}
+
+class RepellingForce(val dx: Double, val dy: Double) {
+    companion object {
+        fun from(repellerPosition: Coordinate, repelledPosition: Coordinate, strength: Double): RepellingForce {
+            val vectorToOther = repellerPosition.directionTo(repelledPosition)
+            val distance = vectorToOther.size
+            val forceSize = strength / (distance * distance)
+            val forceDirection = vectorToOther.normalize()
+            val totalForce = forceDirection * forceSize
+            return RepellingForce(totalForce.dx, totalForce.dy)
+        }
+    }
+}
 
 class MovableButtonComponent(text: String) : JButton(text) {
     init {
