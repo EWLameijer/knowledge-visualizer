@@ -7,6 +7,8 @@ import java.awt.FontMetrics
 import java.awt.Rectangle
 import javax.swing.JButton
 import javax.swing.JFrame
+import kotlin.math.cos
+import kotlin.math.sin
 import kotlin.math.sqrt
 import kotlin.random.Random
 
@@ -17,7 +19,8 @@ const val horizontalTextMargin = 20
 
 class MainWindow(knowledgeBase: KnowledgeBase) : JFrame() {
     val concepts = mutableListOf<MovableButtonComponent>()
-    val borderForceStrength = 100.0
+    val borderForceStrength = 100_000.0
+    val betweenConceptForceStrength = 200_000.0
 
     init {
         setSize(windowWidth, windowHeight)
@@ -36,16 +39,28 @@ class MainWindow(knowledgeBase: KnowledgeBase) : JFrame() {
     }
 
     fun optimizeLayout() {
-        concepts.forEach {
-            val center = it.getCenter()
+        concepts.forEachIndexed { index, component ->
+            val center = component.center()
             // a force: needs a distance between two points, and a direction, and a relative strength (assume quadratic?)
             // try step of 10
-            val forceFromTop = RepellingForce.from(Coordinate(center.x, 0), center, borderForceStrength)
-
+            val borderCoordinates =
+                listOf(center.x to 0, center.x to windowHeight, 0 to center.y, windowWidth to center.y)
+            val borderForces = borderCoordinates.map { (x, y) ->
+                RepellingForce.from(Coordinate(x, y), center, borderForceStrength)
+            }
+            val otherConcepts = concepts.filterIndexed { otherIndex, _ -> otherIndex != index }
+            val conceptForces =
+                otherConcepts.map { RepellingForce.from(it.center(), center, betweenConceptForceStrength) }
+            val totalForces = (borderForces + conceptForces).sum()
+            println("${component.text}: $totalForces")
+            // TODO: wherever you step, never step outside the borders!
+            // TODO: take dynamic window size
         }
-
     }
 }
+
+private fun Iterable<RepellingForce>.sum(): RepellingForce =
+    this.reduce { acc, f -> RepellingForce(acc.dx + f.dx, acc.dy + f.dy) }
 
 data class Coordinate(val x: Int, val y: Int) {
     fun directionTo(other: Coordinate) = Direction(other.x - x, other.y - y)
@@ -66,19 +81,32 @@ data class Direction(val dx: Int, val dy: Int) {
 data class DirectionVector(val dx: Double, val dy: Double)
 
 class NormalizedDirection(private val dx: Double, private val dy: Double) {
+
     operator fun times(factor: Double) = DirectionVector(dx * factor, dy * factor)
+
+    companion object {
+        private val rand = Random.Default
+
+        fun random(): NormalizedDirection {
+            val degree = Math.toRadians(rand.nextInt(360).toDouble())
+            return NormalizedDirection(cos(degree), sin(degree))
+        }
+    }
 }
 
-class RepellingForce(val dx: Double, val dy: Double) {
+data class RepellingForce(val dx: Double, val dy: Double) {
     companion object {
         fun from(repellerPosition: Coordinate, repelledPosition: Coordinate, strength: Double): RepellingForce {
             val vectorToOther = repellerPosition.directionTo(repelledPosition)
-            val distance = vectorToOther.size
+            val (distance, direction) = distanceAndDirection(vectorToOther)
             val forceSize = strength / (distance * distance)
-            val forceDirection = vectorToOther.normalize()
-            val totalForce = forceDirection * forceSize
+            val totalForce = direction * forceSize
             return RepellingForce(totalForce.dx, totalForce.dy)
         }
+
+        private fun distanceAndDirection(vectorToOther: Direction): Pair<Double, NormalizedDirection> =
+            if (vectorToOther == Direction.none) 1.0 to NormalizedDirection.random()
+            else vectorToOther.size to vectorToOther.normalize()
     }
 }
 
@@ -92,7 +120,7 @@ class MovableButtonComponent(text: String) : JButton(text) {
 
     private fun Rectangle.center() = Coordinate(x + width / 2, y + height / 2)
 
-    fun getCenter(): Coordinate = bounds.center()
+    fun center(): Coordinate = bounds.center()
 }
 
 val randomizer = Random.Default
