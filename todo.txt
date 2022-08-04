@@ -5,7 +5,7 @@ To do:
 4) make lines contract like springs until min-length
 
 
-
+// Not sure if it is ever necessary: wherever you step, never step outside the borders!
 
 5... make it with graphics
 
@@ -30,4 +30,9 @@ can have parameters (like hasWithDefault[internal])
 
 Node -> set of relationships, each of different type 
 
-First: print node 	
+First: print node
+
+Okay. What is the LANGUAGE?
+
+Basically I have a vector, which has direction and size.
+
