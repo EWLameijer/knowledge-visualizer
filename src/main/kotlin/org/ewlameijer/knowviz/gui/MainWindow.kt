@@ -25,12 +25,17 @@ class MainWindow(knowledgeBase: KnowledgeBase) : JFrame() {
         isVisible = true
         this.contentPane.background = Color.WHITE
         layout = null
-        knowledgeBase.concepts().toList().forEach {
-            val button = MovableButtonComponent(it.text)
+        addButtons(knowledgeBase.concepts(), ::ConceptComponent)
+        addButtons(knowledgeBase.relationships(), ::RelationshipComponent)
+        optimizeLayout()
+    }
+
+    private fun <T> addButtons(items: Set<T>, constructor: (T) -> MovableButtonComponent) {
+        items.forEach {
+            val button = constructor(it)
             add(button)
             concepts += button
         }
-        optimizeLayout()
     }
 
     private fun optimizeLayout() {

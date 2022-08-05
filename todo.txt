@@ -1,6 +1,8 @@
 To do:
-1) Make buttons repel one another
+1) Make buttons repel one another DONE!
 2) Draw lines between buttons
+    I now need to store a link to the relationship or concept
+
 3) make lines into unidirectional arrows
 4) make lines contract like springs until min-length
 

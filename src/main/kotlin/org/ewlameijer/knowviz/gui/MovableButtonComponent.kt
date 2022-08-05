@@ -1,12 +1,14 @@
 package org.ewlameijer.knowviz.gui
 
+import org.ewlameijer.knowviz.data.Concept
+import org.ewlameijer.knowviz.data.Relationship
 import java.awt.Font
 import java.awt.FontMetrics
 import java.awt.Rectangle
 import javax.swing.JButton
 import kotlin.random.Random
 
-class MovableButtonComponent(text: String) : JButton(text) {
+open class MovableButtonComponent(text: String) : JButton(text) {
     private val textWidth = getTextWidth(this.font, text)
 
     private val thisButtonWidth = textWidth + 2 * horizontalTextMargin
@@ -36,3 +38,7 @@ class MovableButtonComponent(text: String) : JButton(text) {
         this.setBounds(newPosition.x - thisButtonWidth / 2, newPosition.y - buttonHeight / 2, thisButtonWidth, buttonHeight)
     }
 }
+
+class ConceptComponent(private val concept: Concept) : MovableButtonComponent(concept.text);
+
+class RelationshipComponent(private val relationShip: Relationship) : MovableButtonComponent(relationShip.type())

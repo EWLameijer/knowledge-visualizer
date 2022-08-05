@@ -50,6 +50,8 @@ sealed class Relationship(val origin: Concept, val relationshipType: Relationshi
     abstract fun canAddDestination(concept: Concept) : Boolean
 
     abstract fun addDestination(concept: Concept)
+
+    fun type() = relationshipType.text
 }
 
 class OneToOneRelationship(origin: Concept, relationshipType: RelationshipType, val destination: Concept) :
