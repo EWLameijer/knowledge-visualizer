@@ -2,6 +2,9 @@ package org.ewlameijer.knowviz.data
 
 class KnowledgeBase(private val concepts: MutableSet<Concept>, private val relationships: MutableSet<Relationship>) {
 
+    fun relationShipBetween(concept: Concept, relationship: Relationship): Boolean =
+        relationships.any { it.origin == concept || it.hasDestination(concept)}
+
     fun concepts() : Set<Concept> = concepts
     fun relationships() : Set<Relationship> = relationships
 

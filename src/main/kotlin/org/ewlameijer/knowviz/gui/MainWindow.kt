@@ -25,14 +25,17 @@ class MainWindow(knowledgeBase: KnowledgeBase) : JFrame() {
         isVisible = true
         this.contentPane.background = Color.WHITE
         layout = null
-        addButtons(knowledgeBase.concepts(), ::ConceptComponent)
-        addButtons(knowledgeBase.relationships(), ::RelationshipComponent)
+        addButtons(knowledgeBase.concepts(), knowledgeBase, ::ConceptComponent)
+        addButtons(knowledgeBase.relationships(), knowledgeBase, ::RelationshipComponent)
         optimizeLayout()
     }
 
-    private fun <T> addButtons(items: Set<T>, constructor: (T) -> MovableButtonComponent) {
+    private fun <T> addButtons(
+        items: Set<T>, knowledgeBase: KnowledgeBase,
+        constructor: (T, KnowledgeBase) -> MovableButtonComponent
+    ) {
         items.forEach {
-            val button = constructor(it)
+            val button = constructor(it, knowledgeBase)
             add(button)
             concepts += button
         }
@@ -43,6 +46,10 @@ class MainWindow(knowledgeBase: KnowledgeBase) : JFrame() {
             singleRoundLayoutOptimization()
             repaint()
         }
+        concepts.forEach {
+            val relatedConcepts = concepts.filter { k}
+
+        }
     }
 
     private fun singleRoundLayoutOptimization() {
@@ -51,11 +58,11 @@ class MainWindow(knowledgeBase: KnowledgeBase) : JFrame() {
             val otherConcepts = concepts.filterIndexed { otherIndex, _ -> otherIndex != index }
             while (stepSize >= 1.0) {
                 val center = component.center()
-                val currentForces = forcesAt(center, otherConcepts)
+                val currentForces = forcesAt(component, center, otherConcepts)
 
                 // Okay. Now try a step in the right direction. Say of size 10. If it is better, execute it. If it is worse, halve the step it.
                 val possibleNewPosition = center + CoordinateDifference.from(currentForces.direction * stepSize)
-                val newForces = forcesAt(possibleNewPosition, otherConcepts)
+                val newForces = forcesAt(component, possibleNewPosition, otherConcepts)
                 if (newForces.size < currentForces.size) component.moveTo(possibleNewPosition) else stepSize /= 2
             }
 
@@ -66,7 +73,11 @@ class MainWindow(knowledgeBase: KnowledgeBase) : JFrame() {
         }
     }
 
-    private fun forcesAt(position: Coordinate, otherComponents: List<MovableButtonComponent>): RepellingForce {
+    private fun forcesAt(
+        component: MovableButtonComponent,
+        position: Coordinate,
+        otherComponents: List<MovableButtonComponent>
+    ): RepellingForce {
         val borderCoordinates =
             listOf(position.x to 0, position.x to windowHeight, 0 to position.y, windowWidth to position.y)
         val borderForces = borderCoordinates.map { (x, y) ->
@@ -74,6 +85,9 @@ class MainWindow(knowledgeBase: KnowledgeBase) : JFrame() {
         }
         val conceptForces =
             otherComponents.map { RepellingForce.from(it.center(), position, betweenConceptForceStrength) }
+        val attractingComponents = otherComponents.filter { it.hasRelationShipWith(component) }
+
+        //val attactingForces = attractingComponents.map { AttractingForceWithMinimum(it.center(), position, )
         return (borderForces + conceptForces).sum()
     }
 }
